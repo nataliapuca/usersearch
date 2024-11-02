@@ -1,28 +1,43 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUsers } from "../../redux/userSlice";
+import { fetchUsers } from "../../redux/thunks/usersThunk";
 import type { AppDispatch, RootState } from "../../redux/store";
 import { StyledList, StyledListItem } from "./UsersList.styles";
 import { UserCard } from "../UserCard/UserCard";
 import LinearProgress from "@mui/material/LinearProgress";
+import { Link } from "react-router-dom";
 
 const UserList = () => {
   const dispatch: AppDispatch = useDispatch();
-
-  // Access users slice and formData slice from Redux store
-  const { users, loading, error } = useSelector(
+  const { users, loading, error, currentPage, totalUsers } = useSelector(
     (state: RootState) => state.users
   );
   const formData = useSelector((state: RootState) => state.form.formData);
 
   useEffect(() => {
-    // Check if formData has any values and then call fetchUsers
     if (formData && Object.keys(formData).length > 0) {
-      dispatch(fetchUsers(formData)); // Use formData values as parameters
+      dispatch(fetchUsers({ params: formData, page: 1 })); // Fetch the first page
     }
   }, [dispatch, formData]);
 
-  if (loading) {
+  useEffect(() => {
+    const handleScroll = () => {
+      const bottom =
+        window.innerHeight + window.scrollY >= document.body.offsetHeight;
+      const hasMoreUsers = users.length < totalUsers; // Check if there are more users to fetch
+
+      if (bottom && !loading && hasMoreUsers) {
+        dispatch(fetchUsers({ params: formData!, page: currentPage }));
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [dispatch, loading, currentPage, formData, totalUsers, users.length]);
+
+  if (loading && users.length === 0) {
     return <LinearProgress />;
   }
 
@@ -35,10 +50,18 @@ const UserList = () => {
       <StyledList>
         {users?.map((user) => (
           <StyledListItem key={user.id}>
-            <UserCard user={user} />
+            <Link to={`/user/${user.id}`} style={{ textDecoration: "none" }}>
+              <UserCard user={user} />
+            </Link>
           </StyledListItem>
         ))}
       </StyledList>
+      {loading && <LinearProgress />}
+      {!loading && totalUsers > 0 && users.length >= totalUsers && (
+        <div style={{ textAlign: "center", margin: "20px" }}>
+          No more pages to fetch.
+        </div>
+      )}
     </div>
   );
 };

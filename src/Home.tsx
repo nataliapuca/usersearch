@@ -5,7 +5,7 @@ import { Container } from "@mui/material";
 import { Header } from "./components/Header/Header";
 import { Form } from "./components/Form/Form";
 
-function App() {
+function Home() {
   return (
     <Container maxWidth="sm">
       <Header title="Developer Search" />
@@ -15,4 +15,4 @@ function App() {
   );
 }
 
-export default App;
+export default Home;

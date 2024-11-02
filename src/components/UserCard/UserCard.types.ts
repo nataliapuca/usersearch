@@ -1,4 +1,4 @@
-import { User } from "../../redux/userSlice";
+import { User } from "../../types/types";
 
 export type UserCardPorops = {
   user: User;

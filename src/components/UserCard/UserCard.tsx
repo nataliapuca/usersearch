@@ -1,6 +1,6 @@
 import Card from "@mui/material/Card";
 import React from "react";
-import { User } from "../../redux/userSlice";
+import { User } from "../../types/types";
 import Avatar from "@mui/material/Avatar";
 import { UserContainer } from "./UserCard.styles";
 
@@ -13,7 +13,9 @@ export const UserCard = ({ user }: UserCardPorops) => {
     <Card variant="outlined" sx={{ padding: "10px" }}>
       <UserContainer>
         <Avatar alt={user.name} src={user.avatar_url} />
-        <div>{user.name}</div>
+        <div>
+          {user.name} {user.surename}
+        </div>
       </UserContainer>
     </Card>
   );

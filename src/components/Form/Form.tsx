@@ -9,7 +9,7 @@ import { Button, FormControl, InputLabel } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import { setFormData } from "../../redux/formSlice";
 import { RootState } from "../../redux/store"; // Import your RootState type
-
+import { resetUsers } from "../../redux/userSlice"; // Import the reset action
 export const Form = () => {
   const dispatch = useDispatch();
   const savedFormData = useSelector((state: RootState) => state.form); // Access stored form data
@@ -35,6 +35,7 @@ export const Form = () => {
   }, [savedFormData, reset]);
 
   const onSubmit = (data: FormData) => {
+    dispatch(resetUsers()); // Clear the user list
     dispatch(setFormData(data)); // Save current form data to Redux store
     console.log("Form submitted:", data);
   };
@@ -64,7 +65,7 @@ export const Form = () => {
                 inputProps={{ name: field.name }}
               >
                 <MenuItem value="name">Name</MenuItem>
-                <MenuItem value="surname">Surname</MenuItem>
+                <MenuItem value="surename">Surname</MenuItem>
                 <MenuItem value="createdDate">Created Date</MenuItem>
               </Select>
             )}
