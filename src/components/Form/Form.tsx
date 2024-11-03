@@ -7,12 +7,22 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { Button, FormControl, InputLabel } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
-import { setFormData } from "../../redux/formSlice";
-import { RootState } from "../../redux/store"; // Import your RootState type
-import { resetUsers } from "../../redux/userSlice"; // Import the reset action
-export const Form = () => {
+import { setUsersFormData } from "../../redux/slices/userFormSlice";
+import { setTaskFormData } from "../../redux/slices/taskFormSlice";
+import { resetUsers } from "../../redux/slices/userSlice"; // Import the reset action
+import { resetTasks } from "../../redux/slices/taskSlice"; // Import the reset action
+
+export enum FormType {
+  Task = "task",
+  User = "user",
+}
+type FormPropsType = {
+  type: FormType;
+  prevFormData: FormData | null;
+};
+
+export const Form = ({ type, prevFormData }: FormPropsType) => {
   const dispatch = useDispatch();
-  const savedFormData = useSelector((state: RootState) => state.form); // Access stored form data
 
   const {
     control,
@@ -21,22 +31,28 @@ export const Form = () => {
     reset,
   } = useForm<FormData>({
     defaultValues: {
-      sortBy: "name",
+      sortBy: "createdDate",
       order: "asc",
+      filter: "all",
     },
     resolver: yupResolver(schema),
   });
 
   useEffect(() => {
     // Set form values to previously saved state if available
-    if (savedFormData.formData) {
-      reset(savedFormData.formData);
+    if (prevFormData) {
+      reset(prevFormData);
     }
-  }, [savedFormData, reset]);
+  }, [prevFormData, reset]);
 
   const onSubmit = (data: FormData) => {
-    dispatch(resetUsers()); // Clear the user list
-    dispatch(setFormData(data)); // Save current form data to Redux store
+    dispatch(resetTasks()); // Clear the user list
+    dispatch(resetUsers());
+    if (type === FormType.User) {
+      dispatch(setUsersFormData(data)); // Save current form data to Redux store
+    } else {
+      dispatch(setTaskFormData(data)); // Save current form data to Redux store
+    }
     console.log("Form submitted:", data);
   };
 
@@ -64,9 +80,12 @@ export const Form = () => {
                 value={field.value}
                 inputProps={{ name: field.name }}
               >
-                <MenuItem value="name">Name</MenuItem>
-                <MenuItem value="surename">Surname</MenuItem>
                 <MenuItem value="createdDate">Created Date</MenuItem>
+                {type === FormType.User ? (
+                  <MenuItem value="name">Name</MenuItem>
+                ) : (
+                  <MenuItem value="description">Description</MenuItem>
+                )}
               </Select>
             )}
           />
@@ -95,6 +114,23 @@ export const Form = () => {
             )}
           />
         </FormControl>
+
+        {type === FormType.Task && (
+          <FormControl fullWidth>
+            <InputLabel>Filter</InputLabel>
+            <Controller
+              name="filter"
+              control={control}
+              render={({ field }) => (
+                <Select label="Filter" fullWidth {...field}>
+                  <MenuItem value="completed">Completed</MenuItem>
+                  <MenuItem value="pending">Pending</MenuItem>
+                  <MenuItem value="all">All</MenuItem>
+                </Select>
+              )}
+            />
+          </FormControl>
+        )}
         <Button type="submit">SEARCH</Button>
       </div>
     </form>

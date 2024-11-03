@@ -1,15 +1,19 @@
 import { configureStore } from "@reduxjs/toolkit";
-import userReducer from "./userSlice";
-import formReducer from "./formSlice"; // Add this line to import formReducer
+import userReducer from "./slices/userSlice";
+import tasksReducer from "./slices/taskSlice";
+
+import formReducer from "./slices/userFormSlice";
+import userFormReducer from "./slices/taskFormSlice";
 
 const store = configureStore({
   reducer: {
     users: userReducer,
-    form: formReducer, // Combining the user and form reducers
+    tasks: tasksReducer,
+    userForm: formReducer,
+    taskForm: userFormReducer,
   },
 });
 
-// Types for root state and dispatch, based on the configured store
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 

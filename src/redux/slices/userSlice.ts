@@ -1,38 +1,38 @@
 // src/redux/userSlice.js
 import { createSlice } from "@reduxjs/toolkit";
-import { TaskState } from "../types/types";
-import { fetchTasks } from "./thunks/tasksThunk";
+import { UserState } from "../../types/types";
+import { fetchUsers } from "../thunks/usersThunk";
 
 const userSlice = createSlice({
-  name: "tasks",
+  name: "users",
   initialState: {
-    tasks: [],
+    users: [],
     loading: false,
     error: null,
     currentPage: 1, // Start at page 1
-    totalTasks: 0, // Initial total users count
-  } as TaskState,
+    totalUsers: 0, // Initial total users count
+  } as UserState,
   reducers: {
     resetUsers: (state) => {
-      state.tasks = []; // Clear the user list
+      state.users = []; // Clear the user list
       state.currentPage = 1; // Reset current page to 1
-      state.totalTasks = 0; // Reset total users count
+      state.totalUsers = 0; // Reset total users count
     },
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchTasks.pending, (state) => {
+      .addCase(fetchUsers.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchTasks.fulfilled, (state, action) => {
+      .addCase(fetchUsers.fulfilled, (state, action) => {
         state.loading = false;
-        state.tasks = [...state.tasks, ...action.payload.tasks]; // Append new users
+        state.users = [...state.users, ...action.payload.users]; // Append new users
         state.currentPage += 1; // Increment current page
-        state.totalTasks = action.payload.totalUsers; // Assuming your API provides total users count
+        state.totalUsers = action.payload.totalUsers; // Assuming your API provides total users count
       })
 
-      .addCase(fetchTasks.rejected, (state, action) => {
+      .addCase(fetchUsers.rejected, (state, action) => {
         state.loading = false;
         console.log("ojojoj");
 
