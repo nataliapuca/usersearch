@@ -1,7 +1,8 @@
 // src/redux/userSlice.js
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { TaskState } from "../../types/types";
 import { fetchTasks } from "../thunks/tasksThunk";
+import { FormData } from "../../components/Form/Form.types";
 
 const userSlice = createSlice({
   name: "tasks",
@@ -11,12 +12,16 @@ const userSlice = createSlice({
     error: null,
     currentPage: 1, // Start at page 1
     totalTasks: 0, // Initial total users count
+    formData: null,
   } as TaskState,
   reducers: {
     resetTasks: (state) => {
       state.tasks = []; // Clear the user list
       state.currentPage = 1; // Reset current page to 1
       state.totalTasks = 0; // Reset total users count
+    },
+    setTaskFormData: (state, action: PayloadAction<FormData>) => {
+      state.formData = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -40,5 +45,5 @@ const userSlice = createSlice({
       });
   },
 });
-export const { resetTasks } = userSlice.actions;
+export const { resetTasks, setTaskFormData } = userSlice.actions;
 export default userSlice.reducer;

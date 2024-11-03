@@ -1,3 +1,5 @@
+import { FormData } from "../components/Form/Form.types";
+
 export type User = {
   id: string; // or number, based on your data
   name: string; // Ensure you have the correct fields that your API returns
@@ -11,6 +13,7 @@ export interface UserState {
   error: string | null;
   currentPage: number; // Track the current page
   totalUsers: number; // Track total number of users
+  formData: FormData | null;
 }
 
 export type Task = {
@@ -25,4 +28,5 @@ export interface TaskState {
   error: string | null;
   currentPage: number; // Track the current page
   totalTasks: number; // Track total number of users
+  formData: FormData | null;
 }

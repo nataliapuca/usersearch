@@ -1,7 +1,8 @@
 // src/redux/userSlice.js
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { UserState } from "../../types/types";
 import { fetchUsers } from "../thunks/usersThunk";
+import { FormData } from "../../components/Form/Form.types";
 
 const userSlice = createSlice({
   name: "users",
@@ -11,12 +12,16 @@ const userSlice = createSlice({
     error: null,
     currentPage: 1, // Start at page 1
     totalUsers: 0, // Initial total users count
+    formData: null,
   } as UserState,
   reducers: {
     resetUsers: (state) => {
       state.users = []; // Clear the user list
       state.currentPage = 1; // Reset current page to 1
       state.totalUsers = 0; // Reset total users count
+    },
+    setUsersFormData: (state, action: PayloadAction<FormData>) => {
+      state.formData = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -40,5 +45,5 @@ const userSlice = createSlice({
       });
   },
 });
-export const { resetUsers } = userSlice.actions;
+export const { resetUsers, setUsersFormData } = userSlice.actions;
 export default userSlice.reducer;
