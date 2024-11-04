@@ -19,7 +19,7 @@ function Home() {
 
   return (
     <Container maxWidth="sm">
-      <Header title="Developer Search" />
+      <Header title="Find Developer" />
       <Form
         type={FormType.User}
         prevFormData={formData}

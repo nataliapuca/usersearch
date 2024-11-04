@@ -7,7 +7,7 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import { Button, FormControl, InputLabel } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { StyledContainer } from "./Form.styles";
+import { StyledContainer, StyledForm } from "./Form.styles";
 
 export const Form = ({
   type,
@@ -43,7 +43,7 @@ export const Form = ({
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
+    <StyledForm onSubmit={handleSubmit(onSubmit)}>
       <StyledContainer>
         <FormControl fullWidth error={!!errors.sortBy}>
           <InputLabel>Sort By</InputLabel>
@@ -102,16 +102,18 @@ export const Form = ({
               control={control}
               render={({ field }) => (
                 <Select label="Filter" fullWidth {...field}>
-                  <MenuItem value="completed">Completed</MenuItem>
-                  <MenuItem value="pending">Pending</MenuItem>
+                  <MenuItem value="resolved">Completed</MenuItem>
+                  <MenuItem value="unresolved">Pending</MenuItem>
                   <MenuItem value="all">All</MenuItem>
                 </Select>
               )}
             />
           </FormControl>
         )}
-        <Button type="submit">SEARCH</Button>
+        <Button type="submit" variant="contained">
+          ❔
+        </Button>
       </StyledContainer>
-    </form>
+    </StyledForm>
   );
 };

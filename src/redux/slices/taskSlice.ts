@@ -23,6 +23,16 @@ const userSlice = createSlice({
     setTaskFormData: (state, action: PayloadAction<FormData>) => {
       state.formData = action.payload;
     },
+    updateTaskStatus: (
+      state,
+      action: PayloadAction<{ id: string; status: string }>
+    ) => {
+      const { id, status } = action.payload;
+      const task = state.tasks.find((task) => task.id === id);
+      if (task) {
+        task.status = status; // Update the status of the task
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -45,5 +55,6 @@ const userSlice = createSlice({
       });
   },
 });
-export const { resetTasks, setTaskFormData } = userSlice.actions;
+export const { resetTasks, setTaskFormData, updateTaskStatus } =
+  userSlice.actions;
 export default userSlice.reducer;

@@ -1,3 +1,4 @@
+import { Timestamp } from "firebase-admin/firestore";
 import { FormData } from "../components/Form/Form.types";
 
 export type User = {
@@ -5,6 +6,7 @@ export type User = {
   name: string; // Ensure you have the correct fields that your API returns
   surename: string;
   avatar_url?: string;
+  createdDate: { _seconds: number; _nanoseconds: number };
 };
 
 export interface UserState {

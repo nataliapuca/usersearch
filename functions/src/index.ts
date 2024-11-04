@@ -1,7 +1,6 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import * as corsLib from "cors";
-
 import { OrderByDirection } from "firebase-admin/firestore";
 
 const cors = corsLib({ origin: true });
@@ -24,7 +23,7 @@ exports.getUserTasks = functions.https.onRequest((req, res) => {
         typeof orderQuery === "string"
           ? (orderQuery as OrderByDirection)
           : "asc";
-      const filter = req.query.filter || null; // Filter for task status
+      const filter = req.query.filter;
 
       const tasksRef = admin
         .firestore()
@@ -32,12 +31,14 @@ exports.getUserTasks = functions.https.onRequest((req, res) => {
         .doc(userId as string)
         .collection("tasks");
 
-      let query = tasksRef.orderBy(sortBy, order); // Apply sorting
+      let filteredQuery = tasksRef
+        .where("status", "==", filter as string)
+        .orderBy(sortBy, order); // Apply sorting
 
+      let unfilteredQuery = tasksRef.orderBy(sortBy, order); // Apply sorting
+      let query =
+        (filter as string) !== "all" ? filteredQuery : unfilteredQuery;
       // Apply filter if specified
-      if (filter) {
-        query = query.where("status", "==", filter);
-      }
 
       // Pagination logic
       const pageSize = 10;
@@ -71,7 +72,6 @@ exports.getUserTasks = functions.https.onRequest((req, res) => {
 
 exports.getUsers = functions.https.onRequest((req, res) => {
   return cors(req, res, async () => {
-    // Wrap the function in cors
     const pageQuery = req.query.page;
     const page = typeof pageQuery === "string" ? parseInt(pageQuery) : 1;
 
@@ -100,7 +100,6 @@ exports.getUsers = functions.https.onRequest((req, res) => {
         id: doc.id,
         ...doc.data(),
       }));
-
       res.status(200).json({ users, totalUsers });
     } catch (error) {
       console.error("Error fetching users:", error);

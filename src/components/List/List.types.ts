@@ -5,6 +5,7 @@ import { FormData } from "../Form/Form.types";
 export type FetchDataType = {
   page: number;
   params: FormData;
+  id?: string;
 };
 
 export type ListProps = {
@@ -15,6 +16,7 @@ export type ListProps = {
   totalItems: number;
   fetchData: (args: FetchDataType) => AsyncThunkAction<any, FetchDataType, any>; // Updated prop type
   formData: FormData | null;
+  collectionId?: string | undefined;
 };
 
 export function isUser(item: User | Task): item is User {

@@ -17,12 +17,14 @@ const List = ({
   totalItems,
   fetchData,
   formData,
+  collectionId,
 }: ListProps) => {
   const dispatch: AppDispatch = useDispatch();
+  console.log(collectionId, " id in list component");
 
   useEffect(() => {
     if (formData && Object.keys(formData).length > 0) {
-      dispatch(fetchData({ params: formData, page: 1 }));
+      dispatch(fetchData({ params: formData, page: 1, id: collectionId }));
       console.log(
         "w srodku fetch data - >itemslength",
         items.length,
@@ -39,7 +41,9 @@ const List = ({
       const hasMoreUsers = items.length < totalItems; // Check if there are more users to fetch
       console.log("itemslength", items.length, "totalitems", totalItems);
       if (bottom && !loading && hasMoreUsers) {
-        dispatch(fetchData({ params: formData!, page: currentPage }));
+        dispatch(
+          fetchData({ params: formData!, page: currentPage, id: collectionId })
+        );
         console.log(
           "w srodku fetch data - >itemslength",
           items.length,
@@ -66,12 +70,15 @@ const List = ({
   const renderItem = (item: User | Task) => {
     if (isUser(item)) {
       return (
-        <Link to={`/user/${item.id}`} style={{ textDecoration: "none" }}>
+        <Link
+          to={`/user/${item.id}/${item.name}`}
+          style={{ textDecoration: "none" }}
+        >
           <UserCard user={item} />
         </Link>
       );
     } else {
-      return <TaskCard task={item} />;
+      return <TaskCard task={item} collectionId={collectionId} />;
     }
   };
 
@@ -90,12 +97,12 @@ const List = ({
           <StyledListItem key={item.id}>{renderItem(item)}</StyledListItem>
         ))}
       </StyledList>
-      {loading && <LinearProgress />}
-      {!loading && totalItems > 0 && items.length >= totalItems && (
-        <div style={{ textAlign: "center", margin: "20px" }}>
-          No more pages to fetch.
-        </div>
-      )}
+      <div style={{ textAlign: "center", marginBottom: "20px", color: "gray" }}>
+        {loading && <LinearProgress />}
+        {!loading && totalItems > 0 && items.length >= totalItems && (
+          <div> No more results to show.</div>
+        )}
+      </div>
     </div>
   );
 };

@@ -1,22 +1,37 @@
-import Card from "@mui/material/Card";
 import React from "react";
 import { User } from "../../types/types";
 import Avatar from "@mui/material/Avatar";
-import { UserContainer } from "./UserCard.styles";
+import {
+  AvatarContainer,
+  DateContainer,
+  UserContainer,
+  StyledCard,
+} from "./UserCard.styles";
 
 export type UserCardPorops = {
   user: User;
 };
 
 export const UserCard = ({ user }: UserCardPorops) => {
+  const date = new Date(
+    user.createdDate._seconds * 1000 + user.createdDate._nanoseconds / 1000000
+  );
+
+  const formattedDate = date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "2-digit",
+  });
+
   return (
-    <Card variant="outlined" sx={{ padding: "10px" }}>
+    <StyledCard variant="outlined">
       <UserContainer>
-        <Avatar alt={user.name} src={user.avatar_url} />
-        <div>
+        <AvatarContainer>
+          <Avatar alt={user.name} src={user.avatar_url} />
           {user.name} {user.surename}
-        </div>
+        </AvatarContainer>
+        <DateContainer>{formattedDate}</DateContainer>
       </UserContainer>
-    </Card>
+    </StyledCard>
   );
 };

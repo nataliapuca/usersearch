@@ -5,4 +5,8 @@ export const TaskContainer = styled("div")({
   flexDirection: "row",
   alignItems: "center",
   gap: "20px",
+  justifyContent: "space-between",
+  height: "40px",
+  paddingLeft: "10px",
+  paddingRight: "10px",
 });
