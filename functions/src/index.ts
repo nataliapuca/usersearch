@@ -9,21 +9,16 @@ admin.initializeApp();
 exports.getUserTasks = functions.https.onRequest((req, res) => {
   return cors(req, res, async () => {
     try {
-      const userId = req.query.id; // Extract the user ID from the URL
-      if (!userId) {
-        return res.status(400).send("User ID is required");
-      }
+      const {
+        id: userId,
+        page = "1",
+        sortBy = "createdDate",
+        order: orderQuery = "asc",
+        filter,
+      } = req.query;
 
-      const pageQuery = req.query.page;
-      const page = typeof pageQuery === "string" ? parseInt(pageQuery) : 1;
-      const sortQuery = req.query.sortBy;
-      const sortBy = typeof sortQuery === "string" ? sortQuery : "createdDate";
-      const orderQuery = req.query.order;
-      const order =
-        typeof orderQuery === "string"
-          ? (orderQuery as OrderByDirection)
-          : "asc";
-      const filter = req.query.filter;
+      const pageNumber = parseInt(page as string);
+      const order = orderQuery as OrderByDirection;
 
       const tasksRef = admin
         .firestore()
@@ -33,14 +28,12 @@ exports.getUserTasks = functions.https.onRequest((req, res) => {
 
       let filteredQuery = tasksRef
         .where("status", "==", filter as string)
-        .orderBy(sortBy, order); // Apply sorting
+        .orderBy(sortBy as string, order);
 
-      let unfilteredQuery = tasksRef.orderBy(sortBy, order); // Apply sorting
+      let unfilteredQuery = tasksRef.orderBy(sortBy as string, order);
       let query =
         (filter as string) !== "all" ? filteredQuery : unfilteredQuery;
-      // Apply filter if specified
 
-      // Pagination logic
       const pageSize = 10;
 
       const totalCountSnapshot = await query.get();
@@ -48,15 +41,13 @@ exports.getUserTasks = functions.https.onRequest((req, res) => {
 
       const tasksSnapshot = await query
         .limit(pageSize)
-        .offset((page - 1) * pageSize)
+        .offset((pageNumber - 1) * pageSize)
         .get();
 
-      // Check if tasksSnapshot is empty
       if (tasksSnapshot.empty) {
         return res.status(404).json({ tasks: [], message: "No tasks found." });
       }
 
-      // Mapping the snapshot docs to an array of tasks
       const tasks = tasksSnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -64,7 +55,6 @@ exports.getUserTasks = functions.https.onRequest((req, res) => {
 
       return res.status(200).json({ tasks, totalTasks });
     } catch (error) {
-      console.error("Error fetching tasks: ", error);
       return res.status(500).send("Error fetching tasks: " + error);
     }
   });
@@ -72,37 +62,36 @@ exports.getUserTasks = functions.https.onRequest((req, res) => {
 
 exports.getUsers = functions.https.onRequest((req, res) => {
   return cors(req, res, async () => {
-    const pageQuery = req.query.page;
-    const page = typeof pageQuery === "string" ? parseInt(pageQuery) : 1;
+    const {
+      page = "1",
+      sortBy = "createdDate",
+      order: orderQuery = "asc",
+    } = req.query;
 
-    const sortQuery = req.query.sortBy;
-    const sortBy = typeof sortQuery === "string" ? sortQuery : "name";
-
-    const orderQuery = req.query.order;
-    const order = orderQuery === "desc" ? "desc" : "asc";
+    const pageNumber = parseInt(page as string);
+    const order = orderQuery as OrderByDirection;
 
     try {
       const usersRef = admin.firestore().collection("users");
 
-      // Set up the query with sorting
-      let query = usersRef.orderBy(sortBy, order);
-      // Pagination
+      let query = usersRef.orderBy(sortBy as string, order);
       const pageSize = 10;
-      // Fetch the total count of users
+
       const totalCountSnapshot = await usersRef.get();
       const totalUsers = totalCountSnapshot.size;
+
       const usersSnapshot = await query
         .limit(pageSize)
-        .offset((page - 1) * pageSize)
+        .offset((pageNumber - 1) * pageSize)
         .get();
 
       const users = usersSnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
+
       res.status(200).json({ users, totalUsers });
     } catch (error) {
-      console.error("Error fetching users:", error);
       res.status(500).send("Error fetching users: " + error);
     }
   });

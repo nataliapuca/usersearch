@@ -11,7 +11,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/user/:id/:username" element={<UserDetails />} />
-        <Route path="*" element={<NotFoundPage />} /> {/* For handling 404 */}
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Router>
   );
