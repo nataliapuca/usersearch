@@ -1,7 +1,6 @@
 import React from "react";
-import "./App.css";
-import { Container } from "@mui/material";
 import { Header } from "./components/Header/Header";
+import { Container } from "@mui/material";
 
 function NotFoundPage() {
   return (

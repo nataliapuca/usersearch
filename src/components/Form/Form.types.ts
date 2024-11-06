@@ -13,6 +13,6 @@ export enum FormType {
 export type FormPropsType = {
   type: FormType | null;
   prevFormData: FormData | null;
-  setFormData: (data: FormData) => PayloadAction<FormData>;
+  setFormData: (data: FormData | null) => PayloadAction<FormData | null>;
   resetResults: () => PayloadAction<undefined>;
 };

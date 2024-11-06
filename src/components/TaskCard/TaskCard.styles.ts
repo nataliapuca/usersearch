@@ -10,3 +10,12 @@ export const TaskContainer = styled("div")({
   paddingLeft: "10px",
   paddingRight: "10px",
 });
+
+export const TickContainer = styled("div")({
+  display: "flex",
+  flexDirection: "row",
+  alignItems: "center",
+  gap: "12px",
+  color: "gray",
+  fontSize: "13px",
+});

@@ -1,9 +1,8 @@
-import { Timestamp } from "firebase-admin/firestore";
 import { FormData } from "../components/Form/Form.types";
 
 export type User = {
-  id: string; // or number, based on your data
-  name: string; // Ensure you have the correct fields that your API returns
+  id: string;
+  name: string;
   surename: string;
   avatar_url?: string;
   createdDate: { _seconds: number; _nanoseconds: number };
@@ -13,22 +12,23 @@ export interface UserState {
   users: User[];
   loading: boolean;
   error: string | null;
-  currentPage: number; // Track the current page
-  totalUsers: number; // Track total number of users
+  currentPage: number;
+  totalUsers: number;
   formData: FormData | null;
 }
 
 export type Task = {
-  id: string; // or number, based on your data
-  name: string; // Ensure you have the correct fields that your API returns
+  id: string;
+  name: string;
   status: string;
+  createdDate: { _seconds: number; _nanoseconds: number };
 };
 
 export interface TaskState {
   tasks: Task[];
   loading: boolean;
   error: string | null;
-  currentPage: number; // Track the current page
-  totalTasks: number; // Track total number of users
+  currentPage: number;
+  totalTasks: number;
   formData: FormData | null;
 }

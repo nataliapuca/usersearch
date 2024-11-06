@@ -1,7 +1,5 @@
-import React from "react";
 import { styled } from "@mui/material/styles";
 
-// StyledContainer using MUI's styled API
 export const StyledContainer = styled("div")(({ theme }) => ({
   position: "relative",
   display: "flex",
@@ -10,10 +8,9 @@ export const StyledContainer = styled("div")(({ theme }) => ({
   justifyContent: "center",
   fontSize: "34px",
   marginBottom: "30px",
-  color: theme.palette.text.primary, // Use the theme for text color
+  color: theme.palette.text.primary,
 }));
 
-// StyledImage using MUI's styled API
 export const StyledImage = styled("img")({
   maxWidth: "200px",
   maxHeight: "200px",

@@ -1,6 +1,5 @@
 import { styled, keyframes } from "@mui/material/styles";
 
-// Define the fadeIn animation using Material-UI's keyframes
 const fadeIn = keyframes`
   0% {
     opacity: 0;
@@ -12,7 +11,6 @@ const fadeIn = keyframes`
   }
 `;
 
-// StyledList component
 export const StyledList = styled("ul")({
   padding: 0,
   display: "flex",
@@ -20,7 +18,6 @@ export const StyledList = styled("ul")({
   gap: "10px",
 });
 
-// StyledListItem component with animation
 export const StyledListItem = styled("li")(({ theme }) => ({
   marginBottom: "16px",
   listStyle: "none",
@@ -28,7 +25,12 @@ export const StyledListItem = styled("li")(({ theme }) => ({
   animation: `${fadeIn} 0.5s ${theme.transitions.easing.easeInOut} forwards`,
 }));
 
-// ObserverBar component
 export const ObserverBar = styled("div")({
   height: "1px",
+});
+
+export const InfoBar = styled("div")({
+  textAlign: "center",
+  marginBottom: "20px",
+  color: "gray",
 });

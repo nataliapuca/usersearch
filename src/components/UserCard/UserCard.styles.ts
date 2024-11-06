@@ -27,7 +27,7 @@ export const StyledCard = styled(Card)(({ theme }) => ({
   padding: "10px",
   transition: "transform 0.2s ease-in-out",
   "&:hover": {
-    transform: "scale(1.01)", // Slightly enlarges the card on hover
-    boxShadow: theme.shadows[6], // Adds a stronger shadow on hover
+    transform: "scale(1.01)",
+    boxShadow: theme.shadows[6],
   },
 }));

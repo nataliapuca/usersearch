@@ -1,4 +1,3 @@
-// src/redux/userSlice.js
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { TaskState } from "../../types/types";
 import { fetchTasks } from "../thunks/tasksThunk";
@@ -10,17 +9,17 @@ const userSlice = createSlice({
     tasks: [],
     loading: false,
     error: null,
-    currentPage: 1, // Start at page 1
-    totalTasks: 0, // Initial total users count
+    currentPage: 1,
+    totalTasks: 0,
     formData: null,
   } as TaskState,
   reducers: {
     resetTasks: (state) => {
-      state.tasks = []; // Clear the user list
-      state.currentPage = 1; // Reset current page to 1
-      state.totalTasks = 0; // Reset total users count
+      state.tasks = [];
+      state.currentPage = 1;
+      state.totalTasks = 0;
     },
-    setTaskFormData: (state, action: PayloadAction<FormData>) => {
+    setTaskFormData: (state, action: PayloadAction<FormData | null>) => {
       state.formData = action.payload;
     },
     updateTaskStatus: (
@@ -30,7 +29,7 @@ const userSlice = createSlice({
       const { id, status } = action.payload;
       const task = state.tasks.find((task) => task.id === id);
       if (task) {
-        task.status = status; // Update the status of the task
+        task.status = status;
       }
     },
   },
@@ -42,16 +41,14 @@ const userSlice = createSlice({
       })
       .addCase(fetchTasks.fulfilled, (state, action) => {
         state.loading = false;
-        state.tasks = [...state.tasks, ...action.payload.tasks]; // Append new users
-        state.currentPage += 1; // Increment current page
-        state.totalTasks = action.payload.totalTasks; // Assuming your API provides total users count
+        state.tasks = [...state.tasks, ...action.payload.tasks];
+        state.currentPage += 1;
+        state.totalTasks = action.payload.totalTasks;
       })
 
       .addCase(fetchTasks.rejected, (state, action) => {
         state.loading = false;
-        console.log("ojojoj");
-
-        // state.error = action.error.message;
+        state.error = action.error.message || "Failed to fetch tasks.";
       });
   },
 });

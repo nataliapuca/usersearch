@@ -1,54 +1,40 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../../redux/store";
-import { StyledList, StyledListItem } from "./List.styles";
-import { UserCard } from "../UserCard/UserCard";
+import { ListItemComponent } from "../ListItem/ListItem";
+import { ListProps } from "./List.types";
+import { InfoBar, StyledList, StyledListItem } from "./List.styles";
 import LinearProgress from "@mui/material/LinearProgress";
-import { Link } from "react-router-dom";
-import { Task, User } from "../../types/types";
-import { ListProps, isUser } from "./List.types";
-import { TaskCard } from "../TaskCard/TaskCard";
+import { useDataSelector } from "../../hooks/useDataSelector";
+import { Alert } from "@mui/material";
 
-const List = ({
-  items,
-  loading,
-  error,
-  currentPage,
-  totalItems,
-  fetchData,
-  formData,
-  collectionId,
-}: ListProps) => {
+const List = ({ source, fetchData, formData, collectionId }: ListProps) => {
   const dispatch: AppDispatch = useDispatch();
-  console.log(collectionId, " id in list component");
+
+  const { items, loading, error, currentPage, totalItems } =
+    useDataSelector(source);
+
+  const noResults = totalItems === -1;
 
   useEffect(() => {
-    if (formData && Object.keys(formData).length > 0) {
+    if (
+      formData &&
+      Object.keys(formData).length > 0 &&
+      items.length === 0 &&
+      !noResults
+    ) {
       dispatch(fetchData({ params: formData, page: 1, id: collectionId }));
-      console.log(
-        "w srodku fetch data - >itemslength",
-        items.length,
-        "totalitems",
-        totalItems
-      );
     }
-  }, [dispatch, fetchData, formData]);
+  }, [formData, dispatch]);
 
   useEffect(() => {
     const handleScroll = () => {
       const bottom =
         window.innerHeight + window.scrollY >= document.body.offsetHeight;
-      const hasMoreUsers = items.length < totalItems; // Check if there are more users to fetch
-      console.log("itemslength", items.length, "totalitems", totalItems);
+      const hasMoreUsers = items.length < totalItems;
       if (bottom && !loading && hasMoreUsers) {
         dispatch(
           fetchData({ params: formData!, page: currentPage, id: collectionId })
-        );
-        console.log(
-          "w srodku fetch data - >itemslength",
-          items.length,
-          "totalitems",
-          totalItems
         );
       }
     };
@@ -58,51 +44,41 @@ const List = ({
       window.removeEventListener("scroll", handleScroll);
     };
   }, [
-    dispatch,
     loading,
     currentPage,
     formData,
     totalItems,
     items.length,
-    fetchData,
+    dispatch,
+    collectionId,
   ]);
-
-  const renderItem = (item: User | Task) => {
-    if (isUser(item)) {
-      return (
-        <Link
-          to={`/user/${item.id}/${item.name}`}
-          style={{ textDecoration: "none" }}
-        >
-          <UserCard user={item} />
-        </Link>
-      );
-    } else {
-      return <TaskCard task={item} collectionId={collectionId} />;
-    }
-  };
 
   if (loading && items.length === 0) {
     return <LinearProgress />;
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <Alert severity="error"> {error}</Alert>;
+  }
+  if (noResults) {
+    return <Alert severity="info"> No items to display</Alert>;
   }
 
   return (
     <div>
       <StyledList>
         {items?.map((item) => (
-          <StyledListItem key={item.id}>{renderItem(item)}</StyledListItem>
+          <StyledListItem key={item.id}>
+            <ListItemComponent item={item} collectionId={collectionId} />
+          </StyledListItem>
         ))}
       </StyledList>
-      <div style={{ textAlign: "center", marginBottom: "20px", color: "gray" }}>
+      <InfoBar>
         {loading && <LinearProgress />}
         {!loading && totalItems > 0 && items.length >= totalItems && (
           <div> No more results to show.</div>
         )}
-      </div>
+      </InfoBar>
     </div>
   );
 };

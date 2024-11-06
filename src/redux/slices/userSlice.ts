@@ -1,4 +1,3 @@
-// src/redux/userSlice.js
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { UserState } from "../../types/types";
 import { fetchUsers } from "../thunks/usersThunk";
@@ -10,17 +9,17 @@ const userSlice = createSlice({
     users: [],
     loading: false,
     error: null,
-    currentPage: 1, // Start at page 1
-    totalUsers: 0, // Initial total users count
+    currentPage: 1,
+    totalUsers: 0,
     formData: null,
   } as UserState,
   reducers: {
     resetUsers: (state) => {
-      state.users = []; // Clear the user list
-      state.currentPage = 1; // Reset current page to 1
-      state.totalUsers = 0; // Reset total users count
+      state.users = [];
+      state.currentPage = 1;
+      state.totalUsers = 0;
     },
-    setUsersFormData: (state, action: PayloadAction<FormData>) => {
+    setUsersFormData: (state, action: PayloadAction<FormData | null>) => {
       state.formData = action.payload;
     },
   },
@@ -32,16 +31,14 @@ const userSlice = createSlice({
       })
       .addCase(fetchUsers.fulfilled, (state, action) => {
         state.loading = false;
-        state.users = [...state.users, ...action.payload.users]; // Append new users
-        state.currentPage += 1; // Increment current page
-        state.totalUsers = action.payload.totalUsers; // Assuming your API provides total users count
+        state.users = [...state.users, ...action.payload.users];
+        state.currentPage += 1;
+        state.totalUsers = action.payload.totalUsers;
       })
 
       .addCase(fetchUsers.rejected, (state, action) => {
         state.loading = false;
-        console.log("ojojoj");
-
-        // state.error = action.error.message;
+        state.error = action.payload as string;
       });
   },
 });
